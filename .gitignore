@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Local caches & user settings
+.leetype_data/
+.cache/
+*.mp3
+temp_test.mp3
+test.mp3
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
