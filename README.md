@@ -6,18 +6,16 @@
 
 ## 🚀 Key Features
 
-### 1. 📁 Organized LeetCode Problem Hierarchy
-- Pre-populated with curated LeetCode solutions categorized into topic subfolders:
-  - `01_Arrays_and_Hashing` (Two Sum, Contains Duplicate, Valid Anagram, Group Anagrams, Top K Frequent)
-  - `02_Two_Pointers` (Valid Palindrome, Two Sum II, 3Sum, Container With Most Water)
-  - `03_Sliding_Window` (Best Time to Buy and Sell Stock, Longest Substring Without Repeating Characters)
-  - `04_Stack` (Valid Parentheses, Min Stack)
-  - `05_Binary_Search` (Binary Search, Search a 2D Matrix)
-  - `06_Linked_List` (Reverse Linked List, Merge Two Sorted Lists)
-  - `07_Trees` (Invert Binary Tree, Maximum Depth of Binary Tree)
-  - `08_Dynamic_Programming` (Climbing Stairs, Coin Change)
-  - `09_Graphs` (Number of Islands)
-- **Add Your Own Problems**: Click **"📂 Open Solutions Folder"** anytime to drop in your own `.py` files and subfolders.
+### 1. 🖥️ Multi-Monitor & Side Monitor Adaptive Display
+- **Per-Monitor High-DPI Awareness**: Windows per-monitor DPI awareness enabled (`PROCESS_PER_MONITOR_DPI_AWARE`). Fonts and icons remain sharp when moving the window between monitors with different scale factors (e.g. 100% on a 1080p side monitor and 150% on a 4K primary monitor).
+- **🔀 Horizontal & Vertical Stacked Layouts (`Ctrl+L`)**:
+  - **Columns Mode**: 3-column view (`[Sidebar] | [Typing Arena] | [Explanations]`) designed for standard landscape monitors.
+  - **Stacked Mode**: Vertical layout (`[Typing Arena on Top]` / `[Explanations on Bottom]`) customized specifically for **vertical / portrait side monitors**.
+- **Collapsible Panels for Focused Space**:
+  - `📁 Problems (Ctrl+B)`: Toggle problem sidebar on/off to give full width to typing.
+  - `💡 Explanations (Ctrl+E)`: Toggle AI explanation drawer on/off for distraction-free typing.
+- **Smart Window Position Persistence**: Automatically saves and restores the window's exact screen position, size, and layout, so it **always re-opens on your preferred side monitor**.
+- **Ultra-Flexible Resolution Support**: Responsive minimum size down to 480×360 with auto-scaling stat cards.
 
 ---
 
@@ -32,13 +30,28 @@ Every problem features two separate, dedicated learning tracks—both with full 
 
 2. **📊 Track 2: Separate Big O Runtime & Memory Complexity Analysis**
    - **Runtime Complexity (Time Big O)**: Detailed breakdown of loop iterations, recursion depth, and inner operation costs.
-   - **Memory Complexity (Space Big O)**: Auxiliary data structures allocated, call stack frames, and in-place optimizations.
+   - **Memory Complexity (Space Big O)**: Auxiliary data structures allocated, call stack frames, and in-place memory savings.
    - **Complexity Deep Dive & Trade-offs**: Best vs. worst case bounds and time-space trade-offs.
    - **▶ 2. Big O Audio**: Dedicated spoken narration explaining the runtime and memory bounds in detail.
 
 ---
 
-### 3. 🤖 Multi-Provider Free LLM Support & Offline Engine
+### 3. 📁 Organized LeetCode Problem Hierarchy
+- Pre-populated with curated LeetCode solutions categorized into topic subfolders:
+  - `01_Arrays_and_Hashing` (Two Sum, Contains Duplicate, Valid Anagram, Group Anagrams, Top K Frequent)
+  - `02_Two_Pointers` (Valid Palindrome, Two Sum II, 3Sum, Container With Most Water)
+  - `03_Sliding_Window` (Best Time to Buy and Sell Stock, Longest Substring Without Repeating Characters)
+  - `04_Stack` (Valid Parentheses, Min Stack)
+  - `05_Binary_Search` (Binary Search, Search a 2D Matrix)
+  - `06_Linked_List` (Reverse Linked List, Merge Two Sorted Lists)
+  - `07_Trees` (Invert Binary Tree, Maximum Depth of Binary Tree)
+  - `08_Dynamic_Programming` (Climbing Stairs, Coin Change)
+  - `09_Graphs` (Number of Islands)
+- **Add Your Own Problems**: Click **"📂 Open Solutions Folder"** anytime to drop in your own `.py` files and subfolders.
+
+---
+
+### 4. 🤖 Multi-Provider Free LLM Support & Offline Engine
 - **Curated & Offline AST Analyzer** *(Default — Works out of the box with zero setup or API keys!)*
 - **Groq API** *(Free & ultra-fast Llama-3.3 70B)*
 - **Google Gemini API** *(Free tier Gemini 2.0 Flash)*
@@ -47,14 +60,14 @@ Every problem features two separate, dedicated learning tracks—both with full 
 
 ---
 
-### 4. 🎧 AI Text-to-Speech (Listen While Typing)
+### 5. 🎧 AI Text-to-Speech (Listen While Typing)
 - **Microsoft Edge Neural AI Voices**: Natural voices (Christopher, Guy, Jenny, Aria, Ryan, Sonia).
 - **Windows System SAPI Voice**: Built-in zero-latency offline speech fallback.
 - **Full Transport Controls**: Play Track 1 (Walkthrough), Play Track 2 (Big O), Pause/Resume, Stop, timeline scrubber, playback speed (`0.75x` to `1.5x`), and Auto-play.
 
 ---
 
-### 5. ⌨ Precision Code Typing Arena
+### 6. ⌨ Precision Code Typing Arena
 - **Real-Time Visual Feedback**: Green for correct characters, red highlight for typos, glowing cursor caret, and active line highlight.
 - **Code-Friendly Ergonomics**: `Tab` inserts 4 spaces, `Enter` advances line and auto-matches leading indentation, and `Backspace` corrects mistakes.
 - **Live Stats Bar**: Words Per Minute (**WPM**), Accuracy (**ACC**), Elapsed Time (**TIME**), Mistake Counter (**ERRORS**), and progress bar.
@@ -70,13 +83,19 @@ Double-click `Launch_LeetType.bat` or run:
 dist/LeetType/LeetType.exe
 ```
 
-### Option B: Run from Source
+### Option B: Create a Desktop Shortcut
+Run this script once to place a custom LeetType icon shortcut on your Windows desktop:
+```bash
+python create_desktop_shortcut.py
+```
+
+### Option C: Run from Source
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-### Option C: Build the Windows Executable Yourself
+### Option D: Build the Windows Executable Yourself
 ```bash
 python build_exe.py
 ```
@@ -91,4 +110,7 @@ python build_exe.py
 | `Ctrl + R` | Restart current problem |
 | `Ctrl + N` | Next problem |
 | `Ctrl + P` | Previous problem |
+| `Ctrl + B` | Toggle Problem Explorer sidebar on/off |
+| `Ctrl + E` | Toggle AI Explanation panel on/off |
+| `Ctrl + L` | Toggle Layout (Columns ⟷ Stacked for vertical side monitors) |
 | `Ctrl + ,` | Open Settings dialog |
