@@ -114,3 +114,9 @@ python build_exe.py
 | `Ctrl + E` | Toggle AI Explanation panel on/off |
 | `Ctrl + L` | Toggle Layout (Columns ⟷ Stacked for vertical side monitors) |
 | `Ctrl + ,` | Open Settings dialog |
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
