@@ -1,0 +1,34 @@
+"""
+LeetCode 143: Reorder List
+Companies: Meta, Amazon, Microsoft, Bloomberg, Google
+Time Complexity: O(N) - Fast/slow midpoint, second-half reversal, and alternating merge are each O(N).
+Space Complexity: O(1) - Mutates pointers in-place without copying nodes into an array.
+Intuition: 1) Find the middle with slow/fast pointers, 2) Reverse the second half in-place, 3) Zipper-merge the first and reversed second halves.
+Why Efficient: Storing nodes in a list costs O(N) memory. Reversing the second half in-place achieves O(1) extra space.
+"""
+from typing import Optional
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        slow, fast = head, head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        second = slow.next
+        prev = slow.next = None
+        while second:
+            tmp = second.next
+            second.next = prev
+            prev = second
+            second = tmp
+        first, second = head, prev
+        while second:
+            tmp1, tmp2 = first.next, second.next
+            first.next = second
+            second.next = tmp1
+            first, second = tmp1, tmp2

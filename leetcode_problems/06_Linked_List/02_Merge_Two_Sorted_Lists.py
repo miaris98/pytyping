@@ -1,6 +1,10 @@
 """
 LeetCode 21: Merge Two Sorted Lists
-You are given the heads of two sorted linked lists list1 and list2. Merge the two lists into one sorted list.
+Companies: Amazon, Microsoft, Meta, Apple, Google, Adobe
+Time Complexity: O(N + M) - Advances through one node of `list1` or `list2` on each comparison.
+Space Complexity: O(1) - Splices existing nodes in-place using a single `dummy` anchor node.
+Intuition: Use a `dummy` node and `tail` pointer, repeatedly attaching the smaller front node of `list1` or `list2`.
+Why Efficient: In-place pointer splicing uses O(1) memory and attaches any leftover tail in O(1).
 """
 from typing import Optional
 
@@ -21,5 +25,5 @@ class Solution:
                 tail.next = list2
                 list2 = list2.next
             tail = tail.next
-        tail.next = list1 if list1 else list2
-        return dummy.next\n
+        tail.next = list1 or list2
+        return dummy.next

@@ -1,13 +1,15 @@
 """
 LeetCode 74: Search a 2D Matrix
-You are given an m x n integer matrix matrix with the properties that integers in each row are sorted from left to right, and the first integer of each row is greater than the last integer of the previous row.
+Companies: Amazon, Microsoft, Meta, Google, Apple, Bloomberg
+Time Complexity: O(log(M * N)) - Binary search across M * N virtual 1D indices.
+Space Complexity: O(1) - Maps 1D index to 2D `(row, col)` using `divmod(mid, n)` in-place.
+Intuition: Treat the M × N sorted matrix as a virtual 1D sorted array of length `M * N`, converting any 1D midpoint `mid` to `(mid // n, mid % n)`.
+Why Efficient: Achieves logarithmic O(log M + log N) time without flattening or copying the matrix.
 """
 from typing import List
 
 class Solution:
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-        if not matrix or not matrix[0]:
-            return False
         m, n = len(matrix), len(matrix[0])
         low, high = 0, m * n - 1
         while low <= high:
@@ -20,4 +22,4 @@ class Solution:
                 low = mid + 1
             else:
                 high = mid - 1
-        return False\n
+        return False

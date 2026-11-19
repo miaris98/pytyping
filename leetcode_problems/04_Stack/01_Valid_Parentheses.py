@@ -1,6 +1,10 @@
 """
 LeetCode 20: Valid Parentheses
-Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+Companies: Amazon, Meta, Google, Bloomberg, Microsoft, Apple, Spotify
+Time Complexity: O(N) - Single pass pushing and popping each character at most once.
+Space Complexity: O(N) - Stack holds up to N opening brackets in the worst case.
+Intuition: Use a LIFO Stack for open brackets. When encountering a closing bracket, verify the top of the stack matches its required opening partner.
+Why Efficient: Processes nested brackets in one O(N) pass with O(1) per-character stack operations.
 """
 class Solution:
     def isValid(self, s: str) -> bool:
@@ -13,4 +17,4 @@ class Solution:
                 stack.pop()
             else:
                 stack.append(char)
-        return len(stack) == 0\n
+        return not stack
