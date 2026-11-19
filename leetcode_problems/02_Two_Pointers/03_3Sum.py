@@ -1,30 +1,33 @@
 """
 LeetCode 15: 3Sum
-Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+Companies: Meta, Amazon, Google, Microsoft, Apple, Bloomberg, Uber, Adobe
+Time Complexity: O(N²) - O(N log N) sort plus N iterations of an O(N) two-pointer sweep.
+Space Complexity: O(1) - In-place duplicate skipping without a hash set (excluding output list).
+Intuition: Sort the array, fix the first number `nums[i]`, and run a Two-Pointer search on `i+1..n-1` for `-nums[i]`, skipping adjacent duplicates.
+Why Efficient: Reduces O(N³) triple-loop brute force to O(N²) and avoids high-memory hash sets by skipping duplicate adjacent sorted elements.
 """
 from typing import List
 
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
         nums.sort()
-        result = []
-        n = len(nums)
-        for i in range(n - 2):
-            if i > 0 and nums[i] == nums[i - 1]:
+        res = []
+        for i, a in enumerate(nums):
+            if a > 0:
+                break
+            if i > 0 and a == nums[i - 1]:
                 continue
-            left, right = i + 1, n - 1
+            left, right = i + 1, len(nums) - 1
             while left < right:
-                total = nums[i] + nums[left] + nums[right]
-                if total < 0:
-                    left += 1
-                elif total > 0:
+                three_sum = a + nums[left] + nums[right]
+                if three_sum > 0:
                     right -= 1
+                elif three_sum < 0:
+                    left += 1
                 else:
-                    result.append([nums[i], nums[left], nums[right]])
-                    while left < right and nums[left] == nums[left + 1]:
-                        left += 1
-                    while left < right and nums[right] == nums[right - 1]:
-                        right -= 1
+                    res.append([a, nums[left], nums[right]])
                     left += 1
                     right -= 1
-        return result\n
+                    while left < right and nums[left] == nums[left - 1]:
+                        left += 1
+        return res

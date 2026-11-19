@@ -38,8 +38,10 @@ class OfflineCodeAnalyzer:
         has_dp = False
         walkthrough_steps: List[str] = []
 
+        docstring = ""
         try:
             tree = ast.parse(code)
+            docstring = ast.get_docstring(tree) or ""
             func_names = set()
 
             for node in ast.walk(tree):
@@ -240,6 +242,32 @@ class OfflineCodeAnalyzer:
             space_expl = "Operates in-place using only a fixed number of pointer or scalar variables."
 
         clean_name = problem_name.replace(".py", "").replace("_", " ")
+        provider_label = "Built-in Static Analyzer"
+
+        # Override with curated docstring metadata if present (e.g. NeetCode 150)
+        if docstring:
+            doc_meta = {}
+            for line in docstring.splitlines():
+                if ":" in line:
+                    k, v = line.split(":", 1)
+                    doc_meta[k.strip()] = v.strip()
+            if "Intuition" in doc_meta:
+                core_understanding = doc_meta["Intuition"]
+                provider_label = "Curated NeetCode 150 Mentor (Offline)"
+            if "Why Efficient" in doc_meta:
+                why_most_efficient = doc_meta["Why Efficient"]
+            if "Time Complexity" in doc_meta:
+                tc_raw = doc_meta["Time Complexity"]
+                if " - " in tc_raw:
+                    time_comp, time_expl = tc_raw.split(" - ", 1)
+                else:
+                    time_comp = tc_raw
+            if "Space Complexity" in doc_meta:
+                sc_raw = doc_meta["Space Complexity"]
+                if " - " in sc_raw:
+                    space_comp, space_expl = sc_raw.split(" - ", 1)
+                else:
+                    space_comp = sc_raw
 
         walkthrough_audio = (
             f"Code walkthrough and intuition for {clean_name}. "
@@ -271,7 +299,7 @@ class OfflineCodeAnalyzer:
                 f"Memory Bound: {space_comp} — {space_expl}"
             ],
             "bigo_audio_text": bigo_audio,
-            "provider": "Built-in Static Analyzer"
+            "provider": provider_label
         }
 
 

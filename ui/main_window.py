@@ -1,10 +1,11 @@
 import os
 import subprocess
+from collections import defaultdict
 from PyQt5.QtCore import Qt, QSize, QByteArray
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QSplitter,
     QTreeWidget, QTreeWidgetItem, QLineEdit, QPushButton, QLabel,
-    QAction, QMessageBox, QApplication, QFrame
+    QAction, QMessageBox, QApplication, QFrame, QComboBox
 )
 from PyQt5.QtGui import QIcon, QFont
 from config import config, DEFAULT_SOLUTIONS_DIR
@@ -88,6 +89,15 @@ class MainWindow(QMainWindow):
         sidebar_layout = QVBoxLayout(self.sidebar_widget)
         sidebar_layout.setContentsMargins(0, 0, 0, 0)
         sidebar_layout.setSpacing(6)
+
+        self.group_combo = QComboBox()
+        self.group_combo.addItem("📂 Group by: Topic", "topic")
+        self.group_combo.addItem("🏢 Group by: Company", "company")
+        saved_group = config.get("group_by", "topic")
+        if saved_group == "company":
+            self.group_combo.setCurrentIndex(1)
+        self.group_combo.currentIndexChanged.connect(self._on_group_mode_changed)
+        sidebar_layout.addWidget(self.group_combo)
 
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("🔍 Filter problems...")
@@ -258,6 +268,31 @@ class MainWindow(QMainWindow):
             print(f"Error saving window state on close: {e}")
         super().closeEvent(event)
 
+    def _on_group_mode_changed(self):
+        mode = self.group_combo.currentData()
+        config.set("group_by", mode)
+        self._load_problems_tree()
+        if self.search_input.text().strip():
+            self._filter_tree(self.search_input.text())
+
+    def _extract_companies(self, file_path: str) -> list:
+        """Fast extraction of Companies metadata from a problem file's header docstring."""
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                for _ in range(15):
+                    line = f.readline()
+                    if not line:
+                        break
+                    stripped = line.strip()
+                    if stripped.lower().startswith("companies:"):
+                        raw = stripped.split(":", 1)[1]
+                        companies = [c.strip() for c in raw.split(",") if c.strip()]
+                        if companies:
+                            return companies
+        except Exception:
+            pass
+        return ["Other / Custom"]
+
     def _load_problems_tree(self):
         self.tree_widget.clear()
         self.problem_list = []
@@ -266,19 +301,53 @@ class MainWindow(QMainWindow):
         if not os.path.exists(solutions_dir):
             os.makedirs(solutions_dir, exist_ok=True)
 
+        group_mode = self.group_combo.currentData() if hasattr(self, "group_combo") else "topic"
+
         try:
             subdirs = sorted([d for d in os.listdir(solutions_dir) if os.path.isdir(os.path.join(solutions_dir, d))])
         except Exception:
             subdirs = []
 
+        root_files = sorted([f for f in os.listdir(solutions_dir) if f.endswith(".py")])
+
+        if group_mode == "company":
+            company_map = defaultdict(list)
+            for subdir in subdirs:
+                sub_path = os.path.join(solutions_dir, subdir)
+                for py_file in sorted([f for f in os.listdir(sub_path) if f.endswith(".py")]):
+                    full_path = os.path.join(sub_path, py_file)
+                    for comp in self._extract_companies(full_path):
+                        company_map[comp].append((full_path, py_file))
+            for py_file in root_files:
+                full_path = os.path.join(solutions_dir, py_file)
+                for comp in self._extract_companies(full_path):
+                    company_map[comp].append((full_path, py_file))
+
+            # Sort companies by number of problems descending, then alphabetically
+            sorted_companies = sorted(
+                company_map.items(),
+                key=lambda item: (-len(item[1]), item[0].lower())
+            )
+            for idx_c, (company, files) in enumerate(sorted_companies):
+                cat_item = QTreeWidgetItem(self.tree_widget, [f"🏢 {company} ({len(files)})"])
+                cat_item.setExpanded(idx_c == 0)
+                cat_item.setFlags(cat_item.flags() & ~Qt.ItemIsSelectable)
+                for full_path, py_file in files:
+                    display_name = py_file.replace(".py", "").replace("_", " ")
+                    prob_item = QTreeWidgetItem(cat_item, [f"📄 {display_name}"])
+                    prob_item.setData(0, Qt.UserRole, full_path)
+                    prob_item.setData(0, Qt.UserRole + 1, py_file)
+                    self.problem_list.append((full_path, py_file, prob_item))
+            return
+
         for subdir in subdirs:
             sub_path = os.path.join(solutions_dir, subdir)
             category_title = subdir.replace("_", " ").title()
-            cat_item = QTreeWidgetItem(self.tree_widget, [f"📁 {category_title}"])
+            py_files = sorted([f for f in os.listdir(sub_path) if f.endswith(".py")])
+            cat_item = QTreeWidgetItem(self.tree_widget, [f"📁 {category_title} ({len(py_files)})"])
             cat_item.setExpanded(True)
             cat_item.setFlags(cat_item.flags() & ~Qt.ItemIsSelectable)
 
-            py_files = sorted([f for f in os.listdir(sub_path) if f.endswith(".py")])
             for py_file in py_files:
                 full_path = os.path.join(sub_path, py_file)
                 display_name = py_file.replace(".py", "").replace("_", " ")
@@ -288,9 +357,8 @@ class MainWindow(QMainWindow):
 
                 self.problem_list.append((full_path, py_file, prob_item))
 
-        root_files = sorted([f for f in os.listdir(solutions_dir) if f.endswith(".py")])
         if root_files:
-            root_cat = QTreeWidgetItem(self.tree_widget, ["📁 General Solutions"])
+            root_cat = QTreeWidgetItem(self.tree_widget, [f"📁 General Solutions ({len(root_files)})"])
             root_cat.setExpanded(True)
             root_cat.setFlags(root_cat.flags() & ~Qt.ItemIsSelectable)
             for py_file in root_files:
@@ -360,14 +428,17 @@ class MainWindow(QMainWindow):
         text = text.lower().strip()
         for idx in range(self.tree_widget.topLevelItemCount()):
             cat_item = self.tree_widget.topLevelItem(idx)
+            cat_matches_header = text in cat_item.text(0).lower() and len(text) > 0
             cat_matches = 0
             for c in range(cat_item.childCount()):
                 child = cat_item.child(c)
-                visible = text in child.text(0).lower()
+                visible = cat_matches_header or (text in child.text(0).lower())
                 child.setHidden(not visible)
                 if visible:
                     cat_matches += 1
             cat_item.setHidden(cat_matches == 0 and len(text) > 0)
+            if len(text) > 0 and cat_matches > 0:
+                cat_item.setExpanded(True)
 
     def _open_solutions_folder(self):
         folder = config.get("solutions_dir", DEFAULT_SOLUTIONS_DIR)

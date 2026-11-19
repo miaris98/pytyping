@@ -1,6 +1,10 @@
 """
 LeetCode 125: Valid Palindrome
-A phrase is a palindrome if it reads the same forward and backward after converting all uppercase letters into lowercase and removing all non-alphanumeric characters.
+Companies: Meta, Amazon, Microsoft, Apple, Google, Bloomberg
+Time Complexity: O(N) - Left and right pointers cross after visiting each character once.
+Space Complexity: O(1) - Compares characters in-place without allocating a filtered copy.
+Intuition: Walk two pointers inward from both ends of the string, skipping non-alphanumeric characters and comparing lowercase characters.
+Why Efficient: Building a new filtered string and reversing it allocates O(N) extra memory. Two pointers validate the string in-place in O(1) space.
 """
 class Solution:
     def isPalindrome(self, s: str) -> bool:
@@ -14,4 +18,4 @@ class Solution:
                 return False
             left += 1
             right -= 1
-        return True\n
+        return True

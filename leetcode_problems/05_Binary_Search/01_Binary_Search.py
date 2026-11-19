@@ -1,6 +1,10 @@
 """
 LeetCode 704: Binary Search
-Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums.
+Companies: Google, Amazon, Microsoft, Apple, Meta, Bloomberg
+Time Complexity: O(log N) - Halves the search interval on every comparison.
+Space Complexity: O(1) - Iterative pointers `low`, `high`, and `mid`.
+Intuition: Compare `target` with the middle element `nums[mid]`. Discard the left half if `nums[mid] < target` or the right half if `nums[mid] > target`.
+Why Efficient: Reduces O(N) linear search to O(log N) logarithmic time with O(1) memory.
 """
 from typing import List
 
@@ -15,4 +19,4 @@ class Solution:
                 low = mid + 1
             else:
                 high = mid - 1
-        return -1\n
+        return -1

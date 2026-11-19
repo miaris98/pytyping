@@ -1,6 +1,10 @@
 """
 LeetCode 104: Maximum Depth of Binary Tree
-Given the root of a binary tree, return its maximum depth.
+Companies: Amazon, LinkedIn, Meta, Google, Microsoft, Apple
+Time Complexity: O(N) - Visits all N nodes once.
+Space Complexity: O(H) - Call stack depth equals tree height H.
+Intuition: The depth of a tree is `1 + max(maxDepth(root.left), maxDepth(root.right))`.
+Why Efficient: Optimal O(N) divide-and-conquer DFS.
 """
 from typing import Optional
 
@@ -14,6 +18,4 @@ class Solution:
     def maxDepth(self, root: Optional[TreeNode]) -> int:
         if not root:
             return 0
-        left_depth = self.maxDepth(root.left)
-        right_depth = self.maxDepth(root.right)
-        return 1 + max(left_depth, right_depth)\n
+        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
